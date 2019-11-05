@@ -1,0 +1,5 @@
+{
+  "mqtt_server": "",
+  "mqtt_port": "8080",
+  "blynk_token": "YOUR_BLYNK_TOKEN"
+}

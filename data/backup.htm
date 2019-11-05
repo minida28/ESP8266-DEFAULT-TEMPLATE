@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Parameter Readings</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!--<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">-->
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!--<link rel="stylesheet" href="pure-min.css">-->
+  <link rel="stylesheet" href="bulma.min.css">
+  <!--<link rel="stylesheet" href="side-menu.css">-->
+  <!--<link rel="stylesheet" href="bulma.min.css">-->
+  
+  <style>
+    body {
+      font-size: 0.9em; 
+      /*line-height: 1.6;*/
+      /*font-weight: 400;*/
+      /*font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+      color: #222;
+    }
+
+    .chart
+    {
+      width: 300px;
+      height: 130px;
+      max-height: 200px;
+      max-width: 420px;
+      /*border: 1px dotted red;*/
+      /*box-sizing: border-box;*/
+      
+      position: relative;
+      margin: auto;
+      height: 100px;
+      width: 100%;
+    }
+
+  </style>
+
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+</head>
+<body>
+  
+  
+  
+<div id="layout">
+  <!-- Menu toggle -->
+  <a href="#menu" id="menuLink" class="menu-link">
+      <!-- Hamburger icon -->
+      <span></span>
+  </a>
+  
+  <div id="menu">
+    <div class="pure-menu">
+      <a class="pure-menu-heading" href="/">ENERGYMETER_258629</a>
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item menu-item-divided pure-menu-selected"><a class="pure-menu-link" href="test.htm">Test</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="mqtt.htm">MQTT</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="raw.htm">Raw</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="meter.htm">Meter Reading</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="chart.htm">Graphs</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="general.html">General Config</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="config.html">Wifi Settings</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="info.html">Network Info</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="ntp.html">NTP Settings</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="system.html">System Settings</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="async.htm">DEBUG</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="edit2.html">EDITOR</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="main">
+    <div class="header">
+        <h1>Parameter Readings</h1>
+        <!--<h2>A subtitle for your page goes here</h2>-->
+    </div>
+    
+    <section class="section">
+      
+<div class="container">
+  <!--<div class="notification">-->
+                    <!--<div class="chart">-->
+                      <canvas id="chart0"></canvas>
+                    <!--</div>  -->
+  <!--</div>-->
+</div>
+      
+
+      
+      <div class="container">
+        
+
+        
+        <div class="columns is-centered">
+          <div class="column is-two-thirds">
+            <p>
+                To use this layout, you can just copy paste the HTML, along with the CSS in <a href="/css/layouts/side-menu.css" alt="Side Menu CSS">side-menu.css</a>, and the JavaScript in <a href="/js/ui.js">ui.js</a>. The JS file uses vanilla JavaScript to simply toggle an <code>active</code> class that makes the menu responsive.
+            </p>
+            <br>
+            <div class="columns">
+              <div class="column">
+                <table class="table is-narrow">
+                  <thead>
+                    <tr>
+                      <th>Parameter</th>
+                      <th>Values</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td>Uptime</td>
+                        <td><span id="x_runtime"></span></td>
+                      </tr>
+                      <tr>
+                        <td>IP address</td>
+                        <td><span id="x_ipaddress"></span></td>
+                      </tr>
+                      <tr>
+                        <td>Heap</td>
+                        <td><span id="x_heap"></span></td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="column">
+                <table class="table is-narrow">
+                  <thead>
+                    <tr>
+                      <th>Parameter</th>
+                      <th>Values</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Voltage</td>
+                      <td><span id="x_voltage"></span></td>
+                      <td>Volt</td>
+                    </tr>
+                    <tr>
+                      <td>Current</td>
+                      <td><span id="x_ampere"></span></td>
+                      <td>Ampere</td>
+                    </tr>
+                    <tr>
+                      <td>True Power</td>
+                      <td><span id="x_watt"></span></td>
+                      <td>Watt</td>
+                    </tr>
+                    <tr>
+                      <td>Reactive Power</td>
+                      <td><span id="x_var"></span></td>
+                      <td>VAr</td>
+                    </tr>
+                    <tr>
+                      <td>Apparent Power</td>
+                      <td><span id="x_apparentpower"></span></td>
+                      <td>Watt</td>
+                    </tr>
+                    <tr>
+                      <td>Power Factor</td>
+                      <td><span id="x_powerfactor"></span></td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>Frequency</td>
+                      <td><span id="x_frequency"></span></td>
+                      <td>Hz</td>
+                    </tr>
+                    <tr>
+                      <td>Pst kWh</td>
+                      <td><span id="x_pstkwh"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Pst kVArh</td>
+                      <td><span id="x_pstkvarh"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Ngt kVArh</td>
+                      <td><span id="x_ngtkvarh"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Power Threshold</td>
+                      <td><span id="x_wattthreshold"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Current Threshold</td>
+                      <td><span id="x_currentthreshold"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Total Request</td>
+                      <td><span id="x_packet3_requests"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Success Request</td>
+                      <td><span id="x_packet3_successful_requests"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Failed Request</td>
+                      <td><span id="x_packet3_failed_requests"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Error</td>
+                      <td><span id="x_packet3_exception_errors"></span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Connection</td>
+                      <td><span id="x_packet3_connection"></span></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="column">
+                <div class="columns is-multiline">
+                  <div class="column">
+                    <!--<div class="chart" style="height:40vh; width:80vw">-->
+                    <!--<div class="chart">-->
+                    <!--  <canvas id="chart0"></canvas>-->
+                    <!--</div>-->
+                  </div>
+                  <div class="column">
+                    <!--<div class="chart" style="height:40vh; width:80vw">-->
+                    <div class="chart">
+                      <canvas id="chart1"></canvas>
+                    </div>
+                  </div>
+                  <div class="column">
+                    <!--<div class="chart" style="height:40vh; width:80vw">-->
+                    <div class="chart">
+                      <canvas id="chartHeap"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column">
+                <p>tes</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+    </section>
+
+
+  </div>
+</div>
+
+
+  
+  <!-- Javascript section
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<!--<script src="ui.js"></script>-->
+<!--<script src="https://playground.abysscorp.org/chartjs/livecharts/dist/Chart.min.js"></script>-->
+<script src="moment.min.js"></script>
+<script src="chart.min.js"></script>
+<script language="javascript" type="text/javascript">
+
+// function onBodyLoad(){
+//   startSocket();
+//   startEvents();
+// }
+
+window.onload = function ()
+{
+// 	process();
+// 	initializeWatt();
+// 	initializeVoltage();
+// 	initializeHeap();
+
+  startSocket();
+  initializeWatt();
+}
+
+    function startSocket(){
+      ws = new WebSocket('ws://'+document.location.host+'/ws',['arduino']);
+      ws.binaryType = "arraybuffer";
+      ws.onopen = function(e){
+        console.log("Connected");
+      };
+      ws.onclose = function(e){
+        console.log("Disconnected");
+      };
+      ws.onerror = function(e){
+        console.log("ws error", e);
+        console.log("Error");
+      };
+      ws.onmessage = function(e){
+        var msg = "";
+        if(e.data instanceof ArrayBuffer){
+          // msg = "BIN:";
+          var bytes = new Uint8Array(e.data);
+          for (var i = 0; i < bytes.length; i++) {
+            msg += String.fromCharCode(bytes[i]);
+          }
+        } else {
+          // msg = "TXT:"+e.data;
+           msg = e.data;
+        }
+        // console.log(msg);
+        HandleData(msg);
+      };
+      // ge("input_el").onkeydown = function(e){
+      //   stb();
+      //   if(e.keyCode == 13 && ge("input_el").value != ""){
+      //     ws.send(ge("input_el").value);
+      //     ge("input_el").value = "";
+      //   }
+      // }
+    }
+            	
+
+var trigger = true;
+
+var xmlHttp = createXmlHttpObject();
+
+function createXmlHttpObject()
+{
+  if (window.XMLHttpRequest) {
+      xmlHttp = new XMLHttpRequest();
+  } else {
+      xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+  }
+  return xmlHttp;
+}
+
+function process()
+{
+  if (xmlHttp.readyState == 0 || xmlHttp.readyState == 4) {
+      xmlHttp.open('PUT', 'xml', true);
+      xmlHttp.onreadystatechange = handleServerResponse;
+      xmlHttp.send(null);
+  }
+  setTimeout('process()', 3000);
+}
+
+function handleServerResponse()
+{
+  if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+    
+    xmlResponse = xmlHttp.responseXML;
+    
+    insertTableData("meterreading");
+
+    if (trigger) {
+        trigger = !trigger;
+        setTimeout(function() {
+            requestAnimationFrame(advance);
+        }, speed);
+    }
+  }
+}
+
+function HandleData(data) {
+    // insertTableData("meterreading");
+    
+    watt = Number(parseFloat(data));
+    // console.log(watt);
+    
+    document.getElementById('x_watt').textContent = data;
+
+    if (trigger) {
+        trigger = !trigger;
+        setTimeout(function() {
+            requestAnimationFrame(advance);
+        }, speed);
+    }
+}
+            
+            
+function insertTableData(node_name)
+{
+  // create object from child nodes
+  var children = xmlResponse.getElementsByTagName(node_name)[0].childNodes;
+  // console.log(children);
+  
+  // looping the child nodes in xml
+  // while insert data to table in page
+  for(var i = 0; i < children.length; i++){
+    // extract tagNames and values
+    var x = children[i].nodeName;
+    var y = children[i].textContent;
+    
+    // parse values to variables for later use (charts)
+    if (x === "watt") watt = y;
+    else if (x === "voltage") voltage = y;
+    else if (x === "heap") heap = y;
+    
+    // construct element id from nodeName
+    // then insert to data to table
+    x = "x_" + x;
+    document.getElementById(x).textContent = y;
+  }
+}
+            
+var samples = 20;
+var speed = 50;
+
+var datWatt = [];
+var datVoltage = [];
+var datHeap = [];
+var labels = [];
+
+var charts = [];
+
+var watt = 0;
+var voltage = 0;
+var heap = 0;
+
+datWatt.length = samples;
+datVoltage.length = samples;
+datHeap.length = samples;
+labels.length = samples;
+
+function initializeWatt()
+{
+    Chart.defaults.global.maintainAspectRatio = 0;
+    Chart.defaults.global.responsive = 1;
+
+    charts.push(new Chart(document.getElementById("chart0"),
+    {
+      type: 'line',
+      data:
+      {
+        labels: labels,
+        datasets: [{
+          data: datWatt,
+          backgroundColor: "rgba(151,187,205,0.2)",
+          borderColor: "rgba(151,187,205,1)",
+          borderWidth: 2,
+          lineTension: 0.25,
+          pointRadius: 0
+        }]
+      },
+      options:
+      {
+        animation:
+        {
+          duration: speed * 1.5,
+          easing: 'linear'
+        },
+        legend: true,
+        title:
+        {
+          display: true,
+          text: 'Displacement'
+        },
+        scales:
+        {
+          xAxes: [{
+      //       display: true,
+      //       scaleLabel:
+      //       {
+						// 	display: false,
+						// 	labelString: 'Time'
+      //       },
+            type: 'time',
+            time: {
+              parser: 'YYYY-MM-DD HH:mm:ss',
+              unit: 'minute',
+              // displayFormats: {
+              //   day: 'ddd'
+              // },
+              // min: '2017-10-02 18:43:53',
+              // max: '2017-10-09 18:43:53'
+            },
+            ticks: {
+              source: 'data'
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel:
+            {
+							display: true,
+							labelString: 'mm'
+            },
+            ticks:
+            {
+              // beginAtZero: false,
+              beginAtZero: true,
+              min: 0,
+              max: 50,
+              stepSize: 10,
+              userCallback: function(value)
+              {
+                // when the floored value is the same as the value we have a whole number
+                // return Number(value).toFixed(1)+"%";
+                // return Number(value).toFixed(3);
+                return Number(value);
+              },
+            }
+          }],
+        }
+      }
+    }));
+}
+
+function initializeVoltage()
+{
+    Chart.defaults.global.maintainAspectRatio = true;
+    Chart.defaults.global.responsive = true;
+
+    charts.push(new Chart(document.getElementById("chart1"),
+    {
+      type: 'bar',
+      data:
+      {
+        labels: labels,
+        datasets: [{
+          data: datVoltage,
+          backgroundColor: 'rgba(255, 99, 132, 0.1)',
+          borderColor: 'rgb(255, 99, 132)',
+          borderWidth: 2,
+          lineTension: 0.25,
+          pointRadius: 0
+        }]
+      },
+      options:
+      {
+        animation:
+        {
+          duration: speed * 1.5,
+          easing: 'linear'
+        },
+        legend: true,
+        title:
+        {
+          display: true,
+          text: 'Voltage'
+        },
+        scales:
+        {
+          xAxes: [{
+            display: false,
+            scaleLabel:
+            {
+							display: false,
+							labelString: 'Time'
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel:
+            {
+							display: true,
+							labelString: 'Volt'
+            },
+            ticks:
+            {
+              beginAtZero: false,
+              userCallback: function(label, index, labels)
+              {
+                // when the floored value is the same as the value we have a whole number
+                return Number(label).toFixed(1);
+              },
+            }
+          }],
+        }
+      }
+    }));
+}
+
+function initializeHeap()
+{
+    Chart.defaults.global.maintainAspectRatio = true;
+    Chart.defaults.global.responsive = true;
+
+    charts.push(new Chart(document.getElementById("chartHeap"),
+    {
+      type: 'bar',
+      data:
+      {
+        labels: labels,
+        datasets: [{
+          data: datHeap,
+          backgroundColor: 'rgba(237, 226, 43, 0.1)',
+          borderColor: 'rgb(237, 226, 43)',
+          borderWidth: 2,
+          lineTension: 0.25,
+          pointRadius: 0
+        }]
+      },
+      options:
+      {
+        animation:
+        {
+          duration: speed * 1.5,
+          easing: 'linear'
+        },
+        legend: true,
+        title:
+        {
+          display: true,
+          text: 'Free Heap'
+        },
+        scales:
+        {
+          xAxes: [{
+            display: false,
+            scaleLabel:
+            {
+							display: false,
+							labelString: 'Time'
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel:
+            {
+							display: true,
+							labelString: 'kByte'
+            },
+            ticks:
+            {
+              beginAtZero: false,
+              userCallback: function(label, index, labels)
+              {
+                // when the floored value is the same as the value we have a whole number
+                return (Number(label)/1000).toFixed(2);
+              },
+            }
+          }],
+        }
+      }
+    }));
+}
+
+function advance()
+{
+  // var d = [null,null]
+  // d[0] = watt;
+  // d[1] = new Date;
+  var d = {x: new Date, y: watt};
+  datWatt.push(d);
+  console.log(datWatt);
+  datWatt.shift();
+  datVoltage.push(voltage);
+  datVoltage.shift();
+  datHeap.push(heap);
+  datHeap.shift();
+  //labels.push(label);
+  charts.forEach(function(chart) {
+      chart.update();
+  });
+
+  setTimeout(function() {
+      requestAnimationFrame(advance);
+  }, speed);
+}
+</script>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>

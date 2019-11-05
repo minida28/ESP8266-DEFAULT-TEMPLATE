@@ -1,0 +1,130 @@
+
+
+
+<html>
+<head>
+  <title>Dygraphs</title>
+  <script type="text/javascript" src="dygraph-combined.js"></script>
+  <!--<script src="serial-liar.js"></script>-->
+</head>
+<body>
+
+<div id="div_g" style="width:600px; height:300px;"></div>
+
+<br>
+<font size="7"><p id="demo"></p></font>
+
+<!--<p>Try zooming and panning over to the right edge to watch them show up.</p>-->
+
+<script type="text/javascript">
+
+		window.onload = function() {
+		// 	var ctx = document.getElementById('myChart').getContext('2d');
+		// 	window.myChart = new Chart(ctx, config);
+		// 	startSocket();
+		};
+
+    function startSocket(){
+      // ws = new WebSocket('ws://'+document.location.host+'/ws',['arduino']);
+      ws = new WebSocket('ws://192.168.10.116:6432',['arduino']);
+      ws.binaryType = "arraybuffer";
+      ws.onopen = function(e){
+        console.log("Connected");
+      };
+      ws.onclose = function(e){
+        console.log("Disconnected");
+      };
+      ws.onerror = function(e){
+        console.log("ws error", e);
+        console.log("Error");
+      };
+      ws.onmessage = function(e){
+        var msg = "";
+        if(e.data instanceof ArrayBuffer){
+          // msg = "BIN:";
+          var bytes = new Uint8Array(e.data);
+          for (var i = 0; i < bytes.length; i++) {
+            msg += String.fromCharCode(bytes[i]);
+          }
+        } else {
+          // msg = "TXT:"+e.data;
+           msg = e.data;
+        }
+        console.log(msg);
+        HandleData(msg);
+        // onRefresh(msg);
+      };
+      // ge("input_el").onkeydown = function(e){
+      //   stb();
+      //   if(e.keyCode == 13 && ge("input_el").value != ""){
+      //     ws.send(ge("input_el").value);
+      //     ge("input_el").value = "";
+      //   }
+      // }
+    }
+    
+function HandleData(val) {
+    // insertTableData("meterreading");
+    
+    watt = Number(val)
+    
+     if(watt){
+        // watt = Number(parseFloat(val));
+        // console.log(watt);
+        
+        if (watt < 10) {
+          document.getElementById("demo").textContent = "Dist (mm): " + val;
+        } else {
+          document.getElementById("demo").textContent = "Dist (mm): " + val;
+        }
+        
+        
+    
+            var x = new Date();  // current time
+            var y = watt;
+            data.push([x, y]);
+            data.shift();
+            g.updateOptions( { 'file': data } );
+     }
+    
+
+}
+
+
+      var data = [];
+      var t = new Date();
+      
+      for (var i = 100; i >= 0; i--) {
+        var x = new Date(t.getTime() - i * 100);
+        data.push([x, null]);
+        
+        if (i == 0){
+          startSocket();
+        }
+      }
+
+      var g = new Dygraph(document.getElementById("div_g"), data,
+                          {
+                            drawPoints: true,
+                            // showRoller: true,
+                            valueRange: [0.0, 50],
+                            labels: ['Time', 'Random']
+                          });
+                          
+                          
+      // It sucks that these things aren't objects, and we need to store state in window.
+      
+      window.intervalId = setInterval(function() {
+        // var x = new Date();  // current time
+        // var y = Math.random();
+        // data.push([x, y]);
+        // data.shift();
+        // g.updateOptions( { 'file': data } );
+      }, 15);
+    
+
+</script>
+
+
+</body>
+</html>

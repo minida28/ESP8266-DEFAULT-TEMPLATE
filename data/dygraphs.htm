@@ -1,0 +1,58 @@
+
+<html>
+<head>
+  <title>Dygraphs</title>
+  <script type="text/javascript" src="dygraph-combined.js"></script>
+  <script src="serial-liar.js"></script>
+</head>
+<body>
+<div id="graphdiv" style="width:960px; height:500px;"></div>
+<script type="text/javascript">
+  var generator = serialLiar
+    .arithmetic(Math.PI * 2 / 25)
+    .map(Math.sin)
+    .add(serialLiar.randomWalk())
+    .add(serialLiar.arithmetic(0.005));
+
+var index = 0;
+var numbers = generator(1000);
+var data = [];
+while(index < numbers.length){
+  data.push([index++, numbers[index]]);
+}
+
+var g = new Dygraph(document.getElementById("graphdiv"), data, {
+  drawXAxis: false,
+  drawYAxis: false,
+  drawXGrid: false,
+  drawYGrid: false
+});
+
+
+
+ops = 0;
+function update(){
+    //draw();
+    data.push([index++, generator()]);
+    data.shift();
+    ops++;
+    g.updateOptions( { 'file': data } );
+    setTimeout(update, 0);
+}
+
+setInterval(function(){
+    console.log(ops, "per second");
+    ops = 0;
+}, 1000);
+
+update();
+
+</script>
+
+<h1>
+  <a href="https://github.com/oztu/charting-library-comparison">Streaming Line Chart Comparison</a>: 
+  Dygraphs
+</h1>
+
+</body>
+</html>
